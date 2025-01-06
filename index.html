@@ -172,7 +172,8 @@
                             <div class="swiper-slide"><img alt="Gallery Pic 2" class="img-fluid" src="images/gallery/23.png"/></div> 
                             <div class="swiper-slide"><img alt="Gallery Pic 2" class="img-fluid" src="images/gallery/24.jpg"/></div> 
                         </div>
-                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
            
                 </div>
             </div>
@@ -322,12 +323,12 @@
 
 <script>
     var top = new Swiper(".mySwiper", {
-        slidesPerView: 3,
-        spaceBetween: 30,
+        slidesPerView: 2,
+        spaceBetween: 20,
         freeMode: true,
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
         },
         autoplay: {
          delay: 2000,
