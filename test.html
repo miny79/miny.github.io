@@ -321,16 +321,15 @@
 
     const images = document.querySelectorAll('.slider img');
     const slider = document.querySelector('.slider');
-    const content = document.querySelector('.content');
     let currentIndex = 0;
+    let startY = 0; // 터치 시작 위치
+    let isTouching = false; // 터치 여부 확인
 
     function showImage(index) {
-    
-        if (index === images.length-1) {
-             // 슬라이더를 숨기고 본문 활성화
+        if (index === images.length - 1) {
+            // 슬라이더를 숨기고 본문 활성화
             document.body.style.overflow = 'scroll'; // 스크롤 활성화
-            window.removeEventListener('wheel', handleScroll, { passive: false });
-            window.addEventListener('wheel', handleOkScroll, { passive: true }); // passive: true로 변경
+            removeEventListeners();
         } else {
             images.forEach((img, i) => {
                 img.classList.toggle('active', i === index);
@@ -339,7 +338,6 @@
     }
 
     function handleScroll(event) {
-        const slider = document.querySelector('.slider');
         const sliderRect = slider.getBoundingClientRect();
 
         if (sliderRect.top <= window.innerHeight && sliderRect.bottom >= 0) {
@@ -354,10 +352,45 @@
             document.body.style.overflow = 'scroll';
         }
     }
-    function handleOkScroll() {
+
+    function handleTouchStart(event) {
+        startY = event.touches[0].clientY;
+        isTouching = true;
+    }
+
+    function handleTouchMove(event) {
+        if (!isTouching) return;
+
+        const currentY = event.touches[0].clientY;
+        const deltaY = startY - currentY;
+        const sliderRect = slider.getBoundingClientRect();
+
+        if (sliderRect.top <= window.innerHeight && sliderRect.bottom >= 0) {
+            event.preventDefault();
+            if (deltaY > 0) {
+                currentIndex = (currentIndex + 1) % images.length;
+            } else {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+            }
+            showImage(currentIndex);
+        }
+    }
+
+    function handleTouchEnd() {
+        isTouching = false;
+    }
+
+    function removeEventListeners() {
+        window.removeEventListener('wheel', handleScroll, { passive: false });
+        window.removeEventListener('touchstart', handleTouchStart);
+        window.removeEventListener('touchmove', handleTouchMove, { passive: false });
+        window.removeEventListener('touchend', handleTouchEnd);
     }
 
     window.addEventListener('wheel', handleScroll, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
     
 </script>
 <div class="bottom_right"><i class="fa fa-arrow-up fa-2x" id="go-to-top"></i></div>
