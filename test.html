@@ -327,9 +327,10 @@
     function showImage(index) {
     
         if (index === images.length-1) {
-            // 슬라이더를 숨기고 본문 활성화
-            //window.addEventListener('wheel', handleOkScroll, { passive: true });
-            window.addEventListener('wheel', handleScroll, { passive: true });
+             // 슬라이더를 숨기고 본문 활성화
+            document.body.style.overflow = 'scroll'; // 스크롤 활성화
+            window.removeEventListener('wheel', handleScroll, { passive: false });
+            window.addEventListener('wheel', handleOkScroll, { passive: true }); // passive: true로 변경
         } else {
             images.forEach((img, i) => {
                 img.classList.toggle('active', i === index);
@@ -354,7 +355,6 @@
         }
     }
     function handleOkScroll() {
-        document.body.style.overflow = 'scroll';
     }
 
     window.addEventListener('wheel', handleScroll, { passive: false });
