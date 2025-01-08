@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입찰공고 데이터 조회</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-panel {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .error-message {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+            display: none;
+            background-color: #fff3f3;
+            border: 1px solid #ffcdd2;
+            border-radius: 4px;
+        }
+        #response-data {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>입찰공고 데이터 조회</h1>
+        
+        <div class="control-panel">
+            <button onclick="fetchAndDisplayData()">데이터 조회</button>
+        </div>
+
+        <div id="loading" class="loading">데이터를 불러오는 중...</div>
+        <div id="error-message" class="error-message"></div>
+        <div id="response-data"></div>
+
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>공고번호</th>
+                    <th>공고명</th>
+                    <th>공고기관</th>
+                    <th>공고일자</th>
+                </tr>
+            </thead>
+            <tbody id="data-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // 날짜를 'YYYYMMDDHHmm' 형식의 문자열로 변환하는 함수
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}${month}${day}${hours}${minutes}`;
+        }
+
+        // 오늘 날짜의 시작 시간과 종료 시간을 구하는 함수
+        function getTodayStartEndTime() {
+            const today = new Date();
+            const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+            const endOfDay = new Date(today.setHours(23, 59, 0, 0));
+            
+            return {
+                start: formatDateTime(startOfDay),  // 오늘 00:00
+                end: formatDateTime(endOfDay)       // 오늘 23:59
+            };
+        }
+
+        function displayResponse(text) {
+            const responseDiv = document.getElementById('response-data');
+            try {
+                // XML을 보기 좋게 포맷팅
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, "text/xml");
+                const serializer = new XMLSerializer();
+                responseDiv.textContent = serializer.serializeToString(xmlDoc);
+            } catch (e) {
+                // XML 파싱에 실패하면 원본 텍스트 표시
+                responseDiv.textContent = text;
+            }
+        }
+        
+        async function fetchBidData() {
+            try {
+                const today = getTodayStartEndTime();
+                const apiUrl = 'http://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc';
+                const params = {
+                    inqryDiv: '1',
+                    inqryBgnDt: today.start,    // 오늘 00:00
+                    inqryEndDt: today.end,      // 오늘 23:59
+                    pageNo: '1',
+                    numOfRows: '10',
+                    ServiceKey: 'gkkHLdwNgkABeoT6arYK+cHbhohUFTDlMvX01o7hMMFG/rW20Xd42Gx6/8cPoo61wpLVeQvJdXg1uLsVBWMqAA=='
+                };
+
+                const queryString = Object.entries(params)
+                    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+                    .join('&');
+                
+                const fullUrl = `${apiUrl}?${queryString}`;
+                
+                const response = await fetch(fullUrl);
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                const xmlText = await response.text();
+                console.log('Raw response:', xmlText);
+                displayResponse(xmlText);
+
+                if (!xmlText.includes('<?xml')) {
+                    throw new Error('응답이 XML 형식이 아닙니다.');
+                }
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                
+                // XML 파싱 에러 체크
+                const parseError = xmlDoc.getElementsByTagName('parsererror');
+                if (parseError.length > 0) {
+                    throw new Error('XML 파싱 오류: ' + parseError[0].textContent);
+                }
+
+                // 응답 코드 확인
+                const resultCode = xmlDoc.getElementsByTagName('resultCode');
+                if (resultCode.length > 0 && resultCode[0].textContent !== '00') {
+                    const resultMsg = xmlDoc.getElementsByTagName('resultMsg')[0]?.textContent || '알 수 없는 오류';
+                    throw new Error(`API 오류: ${resultMsg} (${resultCode[0].textContent})`);
+                }
+
+                const items = xmlDoc.getElementsByTagName('item');
+                if (items.length === 0) {
+                    throw new Error('데이터가 없습니다.');
+                }
+
+                return Array.from(items).map(item => ({
+                    bidNtceNo: item.getElementsByTagName('bidNtceNo')[0]?.textContent || '',
+                    bidNtceNm: item.getElementsByTagName('bidNtceNm')[0]?.textContent || '',
+                    ntceInsttNm: item.getElementsByTagName('ntceInsttNm')[0]?.textContent || '',
+                    bidNtceDt: item.getElementsByTagName('bidNtceDt')[0]?.textContent || ''
+                }));
+            } catch (error) {
+                console.error('Error details:', error);
+                throw error;
+            }
+        }
+
+        async function fetchAndDisplayData() {
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error-message');
+            const tableBody = document.getElementById('data-body');
+            const responseDiv = document.getElementById('response-data');
+
+            try {
+                loadingDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+                tableBody.innerHTML = '';
+                responseDiv.textContent = '';
+
+                const data = await fetchBidData();
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.bidNtceNo}</td>
+                        <td>${item.bidNtceNm}</td>
+                        <td>${item.ntceInsttNm}</td>
+                        <td>${item.bidNtceDt}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                errorDiv.textContent = '데이터 조회 중 오류가 발생했습니다: ' + error.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
