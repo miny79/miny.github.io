@@ -139,7 +139,7 @@
         async function fetchBidData() {
             try {
                 const today = getTodayStartEndTime();
-                const apiUrl = 'http://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc';
+                const apiUrl = 'https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc';
                 const params = {
                     inqryDiv: '1',
                     inqryBgnDt: today.start,    // 오늘 00:00
