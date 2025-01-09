@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입찰공고 데이터 조회</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-panel {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .error-message {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+            display: none;
+            background-color: #fff3f3;
+            border: 1px solid #ffcdd2;
+            border-radius: 4px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            white-space: nowrap;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        td {
+            word-break: break-word;
+        }
+        .status-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>입찰공고 데이터 조회</h1>
+        
+        <div class="control-panel">
+            <button onclick="fetchAndDisplayData()">데이터 조회</button>
+        </div>
+
+        <div id="loading" class="loading">데이터를 불러오는 중...</div>
+        <div id="error-message" class="error-message"></div>
+        <div id="status-info" class="status-info"></div>
+
+        <div class="table-container">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>공고번호</th>
+                        <th>공고차수</th>
+                        <th>공고명</th>
+                        <th>공고기관</th>
+                        <th>수요기관</th>
+                        <th>공고일시</th>
+                        <th>입찰마감일시</th>
+                        <th>개찰일시</th>
+                        <th>담당자</th>
+                        <th>연락처</th>
+                        <th>입찰방식</th>
+                        <th>계약방식</th>
+                        <th>재공고여부</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}${month}${day}${hours}${minutes}`;
+        }
+
+        function getTodayStartEndTime() {
+            const today = new Date();
+            const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+            const endOfDay = new Date(today.setHours(23, 59, 0, 0));
+            
+            return {
+                start: formatDateTime(startOfDay),
+                end: formatDateTime(endOfDay)
+            };
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            return dateString.replace('T', ' ');
+        }
+
+        async function fetchBidData() {
+            try {
+                const today = getTodayStartEndTime();
+                const apiUrl = 'http://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoCnstwk';
+                const params = {
+                    inqryDiv: '1',
+                    inqryBgnDt: today.start,
+                    inqryEndDt: today.end,
+                    pageNo: '1',
+                    numOfRows: '20',
+                    ServiceKey: 'gkkHLdwNgkABeoT6arYK+cHbhohUFTDlMvX01o7hMMFG/rW20Xd42Gx6/8cPoo61wpLVeQvJdXg1uLsVBWMqAA=='
+                };
+
+                const queryString = Object.entries(params)
+                    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+                    .join('&');
+                
+                const fullUrl = `${apiUrl}?${queryString}`;
+                const response = await fetch(fullUrl);
+                const xmlText = await response.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                
+                // 결과 코드 확인
+                const resultCode = xmlDoc.getElementsByTagName('resultCode')[0]?.textContent;
+                const resultMsg = xmlDoc.getElementsByTagName('resultMsg')[0]?.textContent;
+                
+                document.getElementById('status-info').textContent = 
+                    `응답 상태: ${resultCode} (${resultMsg})`;
+
+                if (resultCode !== '00') {
+                    throw new Error(`API 오류: ${resultMsg}`);
+                }
+
+                const items = xmlDoc.getElementsByTagName('item');
+                return Array.from(items).map(item => ({
+                    bidNtceNo: item.getElementsByTagName('bidNtceNo')[0]?.textContent || '',
+                    bidNtceOrd: item.getElementsByTagName('bidNtceOrd')[0]?.textContent || '',
+                    bidNtceNm: item.getElementsByTagName('bidNtceNm')[0]?.textContent || '',
+                    ntceInsttNm: item.getElementsByTagName('ntceInsttNm')[0]?.textContent || '',
+                    dminsttNm: item.getElementsByTagName('dminsttNm')[0]?.textContent || '',
+                    bidNtceDt: item.getElementsByTagName('bidNtceDt')[0]?.textContent || '',
+                    bidClseDt: item.getElementsByTagName('bidClseDt')[0]?.textContent || '',
+                    opengDt: item.getElementsByTagName('opengDt')[0]?.textContent || '',
+                    ntceInsttOfclNm: item.getElementsByTagName('ntceInsttOfclNm')[0]?.textContent || '',
+                    ntceInsttOfclTelNo: item.getElementsByTagName('ntceInsttOfclTelNo')[0]?.textContent || '',
+                    bidMethdNm: item.getElementsByTagName('bidMethdNm')[0]?.textContent || '',
+                    cntrctCnclsMthdNm: item.getElementsByTagName('cntrctCnclsMthdNm')[0]?.textContent || '',
+                    reNtceYn: item.getElementsByTagName('reNtceYn')[0]?.textContent || ''
+                }));
+            } catch (error) {
+                console.error('Error details:', error);
+                throw error;
+            }
+        }
+
+        async function fetchAndDisplayData() {
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error-message');
+            const tableBody = document.getElementById('data-body');
+            const statusInfo = document.getElementById('status-info');
+
+            try {
+                loadingDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+                statusInfo.textContent = '';
+                tableBody.innerHTML = '';
+
+                const data = await fetchBidData();
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.bidNtceNo}</td>
+                        <td>${item.bidNtceOrd}</td>
+                        <td>${item.bidNtceNm}</td>
+                        <td>${item.ntceInsttNm}</td>
+                        <td>${item.dminsttNm}</td>
+                        <td>${formatDate(item.bidNtceDt)}</td>
+                        <td>${formatDate(item.bidClseDt)}</td>
+                        <td>${formatDate(item.opengDt)}</td>
+                        <td>${item.ntceInsttOfclNm}</td>
+                        <td>${item.ntceInsttOfclTelNo}</td>
+                        <td>${item.bidMethdNm}</td>
+                        <td>${item.cntrctCnclsMthdNm}</td>
+                        <td>${item.reNtceYn}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                if (data.length === 0) {
+                    errorDiv.textContent = '조회된 데이터가 없습니다.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = '데이터 조회 중 오류가 발생했습니다: ' + error.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
