@@ -10179,6 +10179,6 @@ h1.title {
     margin-bottom: 40px;
 }
 
-#copyAccount{
+.copyAccount{
     cursor:pointer;
 }
