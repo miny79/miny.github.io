@@ -10049,6 +10049,7 @@ body {
     bottom: 0;
     right: 0;
     margin: 0px 15px 15px 15px;
+    cursor:pointer;
 }
 
 .bottom_left {
