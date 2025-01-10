@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>김창호와 남소연의 결혼식에 와서 축하해주세요~!</title>
+    <title>web</title>
     <meta content="김창호와 남소연의 결혼식에 와서 축하해주세요~!" name="description"/>
     <meta property="og:image" content="images/pic2.jpeg">
     <meta property="fb:app_id" content="" />
@@ -215,13 +215,13 @@
                                 <span class="contact-label">
                                     <span class="icon icon-person"></span>신랑
                                 </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김정호</span> <span id="copyAccount">토스뱅크 1001-6342-7207</span>(부부통장)</span>
+                                <span class="contact-value"><span style="font-weight: bold;">김정호</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span>(부부통장)</span>
                             </div>
                             <div class="contact-item">
                                 <span class="contact-label">
                                     <span class="icon icon-parents"></span>아버지
                                 </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김생환</span> <span id="copyAccount">부산은행 112-2291-0834-01</span></span>
+                                <span class="contact-value"><span style="font-weight: bold;">김생환</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
                             </div>
                         </div>
     
@@ -231,19 +231,19 @@
                                 <span class="contact-label">
                                     <span class="icon icon-person"></span>신부
                                 </span>
-                                <span class="contact-value"><span style="font-weight: bold;">남소연</span> <span id="copyAccount">토스뱅크 1001-6342-7207(부부통장)</span></span>
+                                <span class="contact-value"><span style="font-weight: bold;">남소연</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span>(부부통장)</span>
                             </div>
                             <div class="contact-item">
                                 <span class="contact-label">
                                     <span class="icon icon-parents"></span>아버지
                                 </span>
-                                <span class="contact-value"><span style="font-weight: bold;">남상휘</span> <span id="copyAccount">부산은행 112-2291-0834-01</span></span>
+                                <span class="contact-value"><span style="font-weight: bold;">남상휘</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
                             </div>
                             <div class="contact-item">
                                 <span class="contact-label">
                                     <span class="icon icon-parents"></span>어머니
                                 </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김미지</span> <span id="copyAccount">우산은행 047-12-043259-8</span></span>
+                                <span class="contact-value"><span style="font-weight: bold;">김미지</span> <span class="copyAccount">부산은행 047-12-043259-8</span></span>
                             </div>
                         </div>
                     </div>
@@ -261,11 +261,11 @@
 
 <script>
     $(document).ready(function(){
-        $("#copyAccount").click(function(){
+        $(".copyAccount").click(function(){
             const copystr = $(this).text();
             navigator.clipboard.writeText(copystr);
-        })
-        
+            alert('계좌번호가 복사 되었습니다.');
+        });        
     })
     var top = new Swiper(".mySwiper", {
         slidesPerView: "auto",
@@ -368,6 +368,7 @@
             window.addEventListener('wheel', handleScroll, { passive: false });
         }
     });
+    
     
 </script>
 <div class="bottom_right"><i class="fa fa-arrow-up fa-2x" id="go-to-top"></i></div>
