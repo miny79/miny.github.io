@@ -17,13 +17,6 @@
     <link href="styles/main.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gamja+Flower|Gugi|Noto+Serif+KR|Stylish|Sunflower:300" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <style>
-        .grid { width:100% }
-        .grid-sizer, .grid-item { width: 45%; }
-        /* .grid-sizer, .grid-item { width: 200px; } */
-        .grid-item {margin-bottom:15px; border-radius: 20px; overflow:hidden;}
-        .grid-item img {display: block; min-width:100%; max-width: 100%; }
-    </style>
 
 </head>
 
@@ -156,7 +149,7 @@
             <div class="container">         
                 <div class="row" class="row text-center">
                     <div class="col-sm-12">
-                        <div id="map" style="width:100%;height:350px;"></div>
+                        <div id="map" style="width:100%;height:330px;"></div>
                         <div id="clickLatlng"></div>
                     </div>
                 </div>
@@ -193,48 +186,91 @@
                 </script>
             </div>
         </div>
+        <div class="container py-4">
+            <div class="transport-item">
+                <div class="transport-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                        <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z"/>
+                    </svg>
+                </div>
+                <div class="transport-text">
+                    <div class="transport-title">승용차 이용시</div>
+                    <div class="transport-detail">지하주차장 및 공영주차장 이용</div>
+                </div>
+            </div>
+    
+            <div class="transport-item">
+                <div class="transport-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
+                        <path d="M3.5 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm9-2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                        <path d="M4 11a1 1 0 0 0-1-1H0V8h3a1 1 0 0 0 1-1V3h5v1.5a1 1 0 0 0 1 1h3v3H9a1 1 0 0 0-1 1v3H4v-1z"/>
+                    </svg>
+                </div>
+                <div class="transport-text">
+                    <div class="transport-title">버스 이용시</div>
+                    <div class="transport-detail">38번, 583번 등월 보라아파트 하차</div>
+                </div>
+            </div>
+    
+            <div class="transport-item">
+                <div class="transport-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
+                        <path d="M2.5 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm8-6a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm0 6a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                    </svg>
+                </div>
+                <div class="transport-text">
+                    <div class="transport-title">지하철 이용시</div>
+                    <div class="transport-detail">남천역 4번출구에서 1Km 이내</div>
+                </div>
+            </div>
+        </div>
 
         <div class="ww-section bg-light getheart">
             <div class="container">
                 <div class="row text-center">
-                    <div class="col-sm-12 ">
+                    <div class="col-sm-12">
                         <h1 class="title">마음전하실 곳</h1>
                         
                         <div class="contact-section">
-                            <div class="section-title">신랑측</div>
-                            <div class="contact-item">
-                                <span class="contact-label">
-                                    <span class="icon icon-person"></span>신랑
-                                </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김창호</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span>(부부통장)</span>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-label">
-                                    <span class="icon icon-parents"></span>아버지
-                                </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김생환</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
+                            <div class="section-title" onclick="toggleSection(this)">신랑측</div>
+                            <div class="contact-items">
+                                <div class="contact-item">
+                                    <span class="contact-label">
+                                        <span class="icon icon-person"></span>신랑
+                                    </span>
+                                    <span class="contact-value"><span style="font-weight: bold;">김창호</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span></span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">
+                                        <span class="icon icon-parents"></span>아버지
+                                    </span>
+                                    <span class="contact-value"><span style="font-weight: bold;">김생환</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
+                                </div>
                             </div>
                         </div>
-    
+        
                         <div class="contact-section">
-                            <div class="section-title">신부측</div>
-                            <div class="contact-item">
-                                <span class="contact-label">
-                                    <span class="icon icon-person"></span>신부
-                                </span>
-                                <span class="contact-value"><span style="font-weight: bold;">남소연</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span>(부부통장)</span>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-label">
-                                    <span class="icon icon-parents"></span>아버지
-                                </span>
-                                <span class="contact-value"><span style="font-weight: bold;">남상휘</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-label">
-                                    <span class="icon icon-parents"></span>어머니
-                                </span>
-                                <span class="contact-value"><span style="font-weight: bold;">김미지</span> <span class="copyAccount">부산은행 047-12-043259-8</span></span>
+                            <div class="section-title" onclick="toggleSection(this)">신부측</div>
+                            <div class="contact-items">
+                                <div class="contact-item">
+                                    <span class="contact-label">
+                                        <span class="icon icon-person"></span>신부
+                                    </span>
+                                    <span class="contact-value"><span style="font-weight: bold;">남소연</span> <span class="copyAccount">토스뱅크 1001-6342-7207</span></span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">
+                                        <span class="icon icon-parents"></span>아버지
+                                    </span>
+                                    <span class="contact-value"><span style="font-weight: bold;">남상휘</span> <span class="copyAccount">부산은행 112-2291-0834-01</span></span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">
+                                        <span class="icon icon-parents"></span>어머니
+                                    </span>
+                                    <span class="contact-value"><span style="font-weight: bold;">김미지</span> <span class="copyAccount">부산은행 047-12-043259-8</span></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,6 +278,8 @@
                 <div class="row text-center" style="height:400px;"></div>
             </div>
         </div>
+
+        
     </div>
 </div>
 </div>
@@ -259,6 +297,17 @@
             alert('계좌번호가 복사 되었습니다.');
         });        
     });
+
+    function toggleSection(element) {
+        const items = element.nextElementSibling.getElementsByClassName('contact-item');
+        Array.from(items).forEach(item => {
+            if (item.classList.contains('show')) {
+                item.classList.remove('show');
+            } else {
+                item.classList.add('show');
+            }
+        });
+    }
 
     var msnry = new Masonry( '.grid', {  
         itemSelector: '.grid-item',  
