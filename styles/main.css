@@ -10111,8 +10111,8 @@ body {
         rgba(255, 255, 255, 0.6) 60%,
         rgba(255, 255, 255, 0.4) 100%
     ),
-    url('../images/bottom_background.jpg') no-repeat center center;
-    background-size: cover;
+    url('../images/bottom_background.jpg') no-repeat;
+    background-size: contain;
     padding: 40px 0;
 }
 
@@ -10149,6 +10149,7 @@ body {
     margin-bottom: 20px;
     font-size: 0.9em;
     color: #333;
+    cursor:pointer;
 }
 
 .contact-item {
@@ -10199,4 +10200,62 @@ h1.title {
 
 .copyAccount{
     cursor:pointer;
+}
+
+
+.grid { width:100% }
+.grid-sizer, .grid-item { width: 45%; }
+/* .grid-sizer, .grid-item { width: 200px; } */
+.grid-item {margin-bottom:15px; border-radius: 20px; overflow:hidden;}
+.grid-item img {display: block; min-width:100%; max-width: 100%; }
+.transport-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #6c757d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+.transport-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.transport-text {
+    display: flex;
+    flex-direction: column;
+}
+.transport-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.transport-detail {
+    color: #666;
+}
+.getheart {
+    padding: 40px 0;
+}
+.title {
+    margin-bottom: 40px;
+}
+.contact-section {
+    margin-bottom: 30px;
+}
+.contact-item {
+    padding: 10px;
+    display: none;
+}
+.contact-item.show {
+    display: block;
+}
+.contact-label {
+    display: inline-block;
+    width: 80px;
+    text-align: left;
+    margin-right: 15px;
+}
+.contact-value {
+    display: inline-block;
 }
