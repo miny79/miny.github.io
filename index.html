@@ -25,12 +25,11 @@
     <div class="div">
         <div class="ww-home-page" id="home">
             <div class="slider">
-                <video src="images/intro.mp4" style="width:100%" poster="images/main/main1.jpg" muted autoplay loop></video>
-                <!-- <img src="images/main/main1.jpg" alt="Image 1" class="active">
+                <img src="images/main/main1.jpg" alt="Image 1" class="active">
                 <img src="images/main/main2.jpg" alt="Image 2">
                 <img src="images/main/main3.jpg" alt="Image 3">
                 <img src="images/main/main4.jpg" alt="Image 4">
-                <img src="images/main/main5.jpg" alt="Image 5"> -->
+                <img src="images/main/main5.jpg" alt="Image 5">
             </div>
         </div>
         <div class="ww-section"  id="couple">
@@ -396,20 +395,20 @@
         //window.removeEventListener('scroll', handleWindowScroll);  // 스크롤 이벤트 리스너 제거
     }
 
-    // window.addEventListener('wheel', handleScroll, { passive: false });
-    // window.addEventListener('touchstart', handleTouchStart);
-    // window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    // window.addEventListener('touchend', handleTouchEnd);
-    // //window.addEventListener('scroll', handleWindowScroll);  // 최상단에 도달했을 때 슬라이더 처음으로 돌아가는 리스너 추가
+    window.addEventListener('wheel', handleScroll, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+    //window.addEventListener('scroll', handleWindowScroll);  // 최상단에 도달했을 때 슬라이더 처음으로 돌아가는 리스너 추가
 
-    // window.addEventListener("scroll", (event) => {
-    //     let scrollY = this.scrollY;
-    //     if (scrollY == 0) {
-    //         currentIndex = 0;  // 슬라이더 인덱스를 0으로 초기화
-    //         showImage(currentIndex);
-    //         window.addEventListener('wheel', handleScroll, { passive: false });
-    //     }
-    // });
+    window.addEventListener("scroll", (event) => {
+        let scrollY = this.scrollY;
+        if (scrollY == 0) {
+            currentIndex = 0;  // 슬라이더 인덱스를 0으로 초기화
+            showImage(currentIndex);
+            window.addEventListener('wheel', handleScroll, { passive: false });
+        }
+    });
     
     
 </script>
